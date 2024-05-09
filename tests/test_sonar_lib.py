@@ -3,7 +3,7 @@ from xml.etree import ElementTree
 import pytest
 from requests import HTTPError
 
-from sonar_lib import api_call
+from sonar_api import api_call
 
 
 def test_get_request(start_sonarqube) -> None:
@@ -28,7 +28,7 @@ def test_post_request(start_sonarqube) -> None:
 
 def test_not_json_response(start_sonarqube) -> None:
     language = 'ts'
-    response = api_call('GET', 'qualityprofiles/search', parameters={
+    response = api_call('GET', '/qualityprofiles/search', parameters={
         'defaults': 'true',
         'language': language
     })

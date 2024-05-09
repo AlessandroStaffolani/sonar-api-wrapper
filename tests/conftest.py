@@ -5,8 +5,8 @@ import time
 
 import pytest
 
-from sonar_lib import DEFAULT_USERNAME, DEFAULT_PASSWORD, DEFAULT_SONAR_ENDPOINT
-from sonar_lib.client import check_sonar_status, update_password
+from sonar_api import DEFAULT_USERNAME, DEFAULT_PASSWORD, DEFAULT_SONAR_ENDPOINT
+from sonar_api.client import check_sonar_status, update_password
 
 
 def wait_for_sonar(
@@ -48,7 +48,7 @@ def start_sonarqube() -> str:
     if start_result.returncode == 0:
         container_id = start_result.stdout.strip()
         try:
-            os.environ['DEFAULT_SONAR_ENDPOINT'] = 'http://localhost:9999/api/'
+            os.environ['DEFAULT_SONAR_ENDPOINT'] = 'http://localhost:9999/api'
 
             wait_for_sonar()
 
