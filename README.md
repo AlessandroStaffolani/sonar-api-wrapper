@@ -4,7 +4,9 @@ Sonar API - a Sonarqube api wrapper
 
 ## Install
 
-To install 
+```bash
+pip install sonar-api
+``` 
 
 ## How to use
 
