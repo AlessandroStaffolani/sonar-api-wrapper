@@ -1,6 +1,6 @@
 [project]
-name = "sonar-api"
-description = "Sonar API - a Sonarqube api wrapper"
+name = "sonar-api-wrapper"
+description = "Sonar API Wrapper - a Sonarqube api wrapper"
 readme = "README.md"
 license = {file = "LICENSE"}
 authors = [
@@ -22,8 +22,8 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/AlessandroStaffolani/sonar-lib"
-Repository = "https://github.com/AlessandroStaffolani/sonar-lib.git"
+Homepage = "https://github.com/AlessandroStaffolani/sonar-api-wrapper"
+Repository = "https://github.com/AlessandroStaffolani/sonar-api-wrapper.git"
 
 [project.optional-dependencies]
 dev = [
@@ -39,7 +39,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.version]
-path = "sonar_api/__version__.py"
+path = "sonar_api_wrapper/__version__.py"
 
 [tool.pytest.ini_options]
 addopts = "--cov --cov-report xml --cov-report term"

@@ -3,7 +3,7 @@ from xml.etree import ElementTree
 import pytest
 from requests import HTTPError
 
-from sonar_api import api_call
+from sonar_api_wrapper import api_call
 
 
 def test_get_request(start_sonarqube) -> None:

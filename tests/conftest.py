@@ -5,8 +5,8 @@ import time
 
 import pytest
 
-from sonar_api import DEFAULT_USERNAME, DEFAULT_PASSWORD, DEFAULT_SONAR_ENDPOINT
-from sonar_api.client import check_sonar_status, update_password
+from sonar_api_wrapper import DEFAULT_USERNAME, DEFAULT_PASSWORD, DEFAULT_SONAR_ENDPOINT
+from sonar_api_wrapper.client import check_sonar_status, update_password
 
 
 def wait_for_sonar(

@@ -1,11 +1,11 @@
-# Sonar API
+# Sonar API Wrapper
 
-Sonar API - a Sonarqube api wrapper
+Sonar API Wrapper - a Sonarqube api wrapper
 
 ## Install
 
 ```bash
-pip install sonar-api
+pip install sonar-api-wrapper
 ``` 
 
 ## How to use
@@ -36,7 +36,7 @@ Returns the API response as `list[dict]`, `dict`, or any other type based on the
 ```python
 import os
 
-from sonar_api import api_call
+from sonar_api_wrapper import api_call
 
 # override default access config
 os.environ['SONAR_PASSWORD'] = 'Username'
