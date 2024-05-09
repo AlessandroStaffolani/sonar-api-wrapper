@@ -48,7 +48,7 @@ def start_sonarqube() -> str:
     if start_result.returncode == 0:
         container_id = start_result.stdout.strip()
         try:
-            os.environ['DEFAULT_SONAR_ENDPOINT'] = 'http://localhost:9999/api'
+            os.environ['SONAR_ENDPOINT'] = 'http://localhost:9999/api'
 
             wait_for_sonar()
 

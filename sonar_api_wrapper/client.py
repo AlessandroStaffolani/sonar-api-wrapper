@@ -29,8 +29,11 @@ def set_from_env(env_name: str, default_value: str) -> str:
         return default_value
 
 
-def get_auth_params(username: str, password: str) -> HTTPBasicAuth:
-    return HTTPBasicAuth(username=username, password=password)
+def get_auth_params(username: str, password: str, token: str | None = None) -> HTTPBasicAuth:
+    if token is None:
+        return HTTPBasicAuth(username=username, password=password)
+    else:
+        return HTTPBasicAuth(username=token, password='')
 
 
 def build_endpoint(path: str, base_path: str) -> str:
@@ -51,30 +54,57 @@ def api_call(
         is_json: bool = True,
         username: str | None = DEFAULT_USERNAME,
         password: str | None = DEFAULT_PASSWORD,
+        token: str | None = None,
         base_path: str | None = DEFAULT_SONAR_ENDPOINT,
 ) -> list[dict] | dict | Any:
     """
     Execute an api call to sonarqube, the method wraps the request.request method
-    :param method: http method: GET, POST, etc.
-    :param route: api path that will be concatenated with the base_path. e.g. qualityprofiles/search
-    :param parameters: dictionary of parameters of the api call
-    :param body: body of the request
-    :param files: files of the request
-    :param headers: headers of the request
-    :param is_json: if set to True (the default) it will parse the response as a json,
-        otherwise it returns the decoded content
-    :param username: username used to log (should be the token if accessing via token).
-        Default value "admin", can also be set via the environment variable SONAR_USERNAME
-    :param password: password used to log (should be empty if accessing via token).
-        Default value "admin", can also be set via the environment variable SONAR_PASSWORD
-    :param base_path: the base endpoint used to build the api call.
-        Default: "http://localhost:9000/api/" can also be set via the environment variable DEFAULT_SONAR_ENDPOINT
-    :return: the api response or raise the exception
+    :param method: HTTP method to use (e.g., GET, POST, etc.).
+    :param route: API path that will be concatenated with `base_path`. For example, `qualityprofiles/search`.
+    :param parameters: Dictionary of parameters for the API call. Default is `None`.
+    :param body: Body of the request. Default is `None`.
+    :param files: Files to be sent in the request. Default is `None`.
+    :param headers: Headers of the request. Default is `None`.
+    :param is_json: If set to `True`, the response will be parsed as JSON.
+        Otherwise, it returns the decoded content. Default is `True`.
+    :param username: Username used for authentication.
+        Default is set via the environment variable `SONAR_USERNAME` or "admin".
+    :param password: Password used for authentication.
+        Default is set via the environment variable `SONAR_PASSWORD` or "admin".
+    :param token: Token used for authentication. It overrides username and password if present.
+        Default value is set via the environment variable `SONAR_TOKEN` or None.
+    :param base_path: The base endpoint used to build the API call.
+        Default is set via the environment variable `DEFAULT_SONAR_ENDPOINT` or "http://localhost:9000/api/".
+    :return: Returns the API response as `list[dict]`, `dict`,
+        or any other type based on the response content or raises an exception.
+        ### Example
+
+        ```python
+        import os
+
+        from sonar_api_wrapper import api_call
+
+        # override default access config
+        os.environ['SONAR_PASSWORD'] = 'Username'
+        os.environ['SONAR_PASSWORD'] = 'YourPassword'
+        os.environ['DEFAULT_SONAR_ENDPOINT'] = 'https://yours.sonarqube/api/'
+
+        response = api_call('GET', 'qualityprofiles/search', parameters={
+            'defaults': 'true'
+        })
+
+        print(f'{response["projects"] = }')
+        ```
+
+        ### Exceptions
+
+        Exceptions are raised based on HTTP errors or other request issues.
     """
 
     sonar_username = set_from_env('SONAR_USERNAME', username)
     sonar_password = set_from_env('SONAR_PASSWORD', password)
-    sonar_base_path = set_from_env('DEFAULT_SONAR_ENDPOINT', base_path)
+    sonar_token = set_from_env('SONAR_TOKEN', token)
+    sonar_base_path = set_from_env('SONAR_ENDPOINT', base_path)
 
     response = requests.request(
         method=method,
@@ -83,7 +113,7 @@ def api_call(
         params=parameters,
         headers=headers,
         files=files,
-        auth=get_auth_params(sonar_username, sonar_password)
+        auth=get_auth_params(sonar_username, sonar_password, sonar_token)
     )
     if response.status_code == 200:
         if is_json:

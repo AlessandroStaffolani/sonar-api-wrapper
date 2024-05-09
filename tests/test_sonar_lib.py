@@ -48,6 +48,19 @@ def test_not_json_response(start_sonarqube) -> None:
     assert language == response_profile_lang
 
 
+def test_login_with_token(start_sonarqube) -> None:
+    token_data = api_call('POST', 'user_tokens/generate', parameters={
+        'name': 'Global Analysis token',
+        'type': 'GLOBAL_ANALYSIS_TOKEN'
+    })
+
+    response = api_call('GET', 'qualityprofiles/search', parameters={
+        'defaults': 'true'
+    }, token=token_data['token'])
+
+    assert len(response['profiles']) > 0
+
+
 def test_request_error(start_sonarqube) -> None:
     with pytest.raises(HTTPError):
         api_call('GET', 'qualityprofiles/backup', parameters={}, is_json=True)

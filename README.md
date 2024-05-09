@@ -23,8 +23,9 @@ Executes an API call to SonarQube. This method wraps the `requests.request` meth
 - `files` (`Any`): Files to be sent in the request. Default is `None`.
 - `headers` (`dict` | `None`): Headers of the request. Default is `None`.
 - `is_json` (`bool`): If set to `True`, the response will be parsed as JSON. Otherwise, it returns the decoded content. Default is `True`.
-- `username` (`str` | `None`): Username used for login (should use a token if accessing via token). Default is set via the environment variable `SONAR_USERNAME` or "admin".
-- `password` (`str` | `None`): Password used for login (should be empty if accessing via token). Default is set via the environment variable `SONAR_PASSWORD` or "admin".
+- `username` (`str` | `None`): Username used for authentication. Default is set via the environment variable `SONAR_USERNAME` or "admin".
+- `password` (`str` | `None`): Password used for authentication. Default is set via the environment variable `SONAR_PASSWORD` or "admin".
+- `token` (`str` | `None`): Token used for authentication. It overrides username and password if present. Default value is set via the environment variable `SONAR_TOKEN` or None.
 - `base_path` (`str` | `None`): The base endpoint used to build the API call. Default is set via the environment variable `DEFAULT_SONAR_ENDPOINT` or "http://localhost:9000/api/".
 
 ### Returns
