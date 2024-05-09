@@ -5,6 +5,8 @@ source venv/bin/activate
 echo "Test"
 pytest
 
+rm -rf dist/*
+
 echo "Build"
 python -m build -w
 
