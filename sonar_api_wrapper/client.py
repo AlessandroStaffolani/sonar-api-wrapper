@@ -22,6 +22,9 @@ class RuleSeverity(str, Enum):
     BLOCKER = 'BLOCKER'
 
 
+PAGINATION_MAX_SIZE = 500
+
+
 def set_from_env(env_name: str, default_value: str) -> str:
     if os.getenv(env_name) is not None:
         return os.getenv(env_name)
