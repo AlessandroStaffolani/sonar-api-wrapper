@@ -26,7 +26,7 @@ Executes an API call to SonarQube. This method wraps the `requests.request` meth
 - `username` (`str` | `None`): Username used for authentication. Default is set via the environment variable `SONAR_USERNAME` or "admin".
 - `password` (`str` | `None`): Password used for authentication. Default is set via the environment variable `SONAR_PASSWORD` or "admin".
 - `token` (`str` | `None`): Token used for authentication. It overrides username and password if present. Default value is set via the environment variable `SONAR_TOKEN` or None.
-- `base_path` (`str` | `None`): The base endpoint used to build the API call. Default is set via the environment variable `DEFAULT_SONAR_ENDPOINT` or "http://localhost:9000/api/".
+- `base_path` (`str` | `None`): The base endpoint used to build the API call. Default is set via the environment variable `SONAR_ENDPOINT` or "http://localhost:9000/api/".
 
 ### Returns
 
@@ -42,7 +42,7 @@ from sonar_api_wrapper import api_call
 # override default access config
 os.environ['SONAR_PASSWORD'] = 'Username'
 os.environ['SONAR_PASSWORD'] = 'YourPassword'
-os.environ['DEFAULT_SONAR_ENDPOINT'] = 'https://yours.sonarqube/api/'
+os.environ['SONAR_ENDPOINT'] = 'https://yours.sonarqube/api/'
 
 response = api_call('GET', 'qualityprofiles/search', parameters={
     'defaults': 'true'
