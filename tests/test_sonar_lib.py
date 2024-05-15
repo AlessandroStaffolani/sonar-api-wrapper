@@ -1,9 +1,27 @@
+import os
 from xml.etree import ElementTree
 
 import pytest
 from requests import HTTPError
 
 from sonar_api_wrapper import api_call
+from sonar_api_wrapper.client import set_from_env
+
+
+def test_set_from_env():
+    env_var_name = 'VAR'
+    default_value = 'default'
+    env_value = 'env'
+    force_value = 'force'
+    var = set_from_env(env_var_name, default_value)
+    assert var == default_value
+
+    os.environ[env_var_name] = env_value
+    var = set_from_env(env_var_name, default_value)
+    assert var == env_value
+
+    var = set_from_env(env_var_name, default_value, force_value)
+    assert var == force_value and os.getenv(env_var_name) == env_value
 
 
 def test_get_request(start_sonarqube) -> None:

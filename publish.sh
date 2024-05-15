@@ -2,8 +2,16 @@
 
 source venv/bin/activate
 
-echo "Test"
+echo "Tests"
 pytest
+
+# Check if pytest command was successful
+if [ $? -ne 0 ]; then
+  echo "Tests failed"
+  exit 1
+else
+  echo "Tests succeeded"
+fi
 
 rm -rf dist/*
 

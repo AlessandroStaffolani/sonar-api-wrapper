@@ -25,7 +25,9 @@ class RuleSeverity(str, Enum):
 PAGINATION_MAX_SIZE = 500
 
 
-def set_from_env(env_name: str, default_value: str) -> str:
+def set_from_env(env_name: str, default_value: str | None, force_value: str | None = None) -> str:
+    if force_value is not None:
+        return force_value
     if os.getenv(env_name) is not None:
         return os.getenv(env_name)
     else:
@@ -55,10 +57,10 @@ def api_call(
         files: Any = None,
         headers: dict | None = None,
         is_json: bool = True,
-        username: str | None = DEFAULT_USERNAME,
-        password: str | None = DEFAULT_PASSWORD,
+        username: str | None = None,
+        password: str | None = None,
         token: str | None = None,
-        base_path: str | None = DEFAULT_SONAR_ENDPOINT,
+        base_path: str | None = None,
 ) -> list[dict] | dict | Any:
     """
     Execute an api call to sonarqube, the method wraps the request.request method
@@ -72,12 +74,16 @@ def api_call(
         Otherwise, it returns the decoded content. Default is `True`.
     :param username: Username used for authentication.
         Default is set via the environment variable `SONAR_USERNAME` or "admin".
+        Argument value has precedence, followed by environment variable value and lastly default value is used.
     :param password: Password used for authentication.
         Default is set via the environment variable `SONAR_PASSWORD` or "admin".
+        Argument value has precedence, followed by environment variable value and lastly default value is used.
     :param token: Token used for authentication. It overrides username and password if present.
         Default value is set via the environment variable `SONAR_TOKEN` or None.
+        Argument value has precedence, followed by environment variable value and lastly default value is used.
     :param base_path: The base endpoint used to build the API call.
         Default is set via the environment variable `SONAR_ENDPOINT` or "http://localhost:9000/api/".
+        Argument value has precedence, followed by environment variable value and lastly default value is used.
     :return: Returns the API response as `list[dict]`, `dict`,
         or any other type based on the response content or raises an exception.
         ### Example
@@ -104,10 +110,10 @@ def api_call(
         Exceptions are raised based on HTTP errors or other request issues.
     """
 
-    sonar_username = set_from_env('SONAR_USERNAME', username)
-    sonar_password = set_from_env('SONAR_PASSWORD', password)
-    sonar_token = set_from_env('SONAR_TOKEN', token)
-    sonar_base_path = set_from_env('SONAR_ENDPOINT', base_path)
+    sonar_username = set_from_env('SONAR_USERNAME', DEFAULT_USERNAME, username)
+    sonar_password = set_from_env('SONAR_PASSWORD', DEFAULT_PASSWORD, password)
+    sonar_token = set_from_env('SONAR_TOKEN', None, token)
+    sonar_base_path = set_from_env('SONAR_ENDPOINT', DEFAULT_SONAR_ENDPOINT, base_path)
 
     response = requests.request(
         method=method,
@@ -128,9 +134,9 @@ def api_call(
 
 
 def check_sonar_status(
-        username: str = DEFAULT_USERNAME,
-        password: str = DEFAULT_PASSWORD,
-        base_path: str = DEFAULT_SONAR_ENDPOINT
+        username: str | None = None,
+        password: str | None = None,
+        base_path: str | None = None,
 ) -> bool:
     ready = False
     try:
@@ -147,8 +153,8 @@ def check_sonar_status(
 def update_password(
         old_password: str,
         new_password: str,
-        username: str = DEFAULT_USERNAME,
-        base_path: str = DEFAULT_SONAR_ENDPOINT,
+        username: str | None = None,
+        base_path: str | None = None,
 ) -> None:
     parameters = {
         'login': username,

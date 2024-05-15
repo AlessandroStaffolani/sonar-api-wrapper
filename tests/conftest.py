@@ -5,16 +5,16 @@ import time
 
 import pytest
 
-from sonar_api_wrapper import DEFAULT_USERNAME, DEFAULT_PASSWORD, DEFAULT_SONAR_ENDPOINT
+from sonar_api_wrapper import DEFAULT_USERNAME, DEFAULT_PASSWORD
 from sonar_api_wrapper.client import check_sonar_status, update_password
 
 
 def wait_for_sonar(
         max_wait: int = 60,
         sleep: int = 1,
-        username: str = DEFAULT_USERNAME,
-        password: str = DEFAULT_PASSWORD,
-        base_path: str = DEFAULT_SONAR_ENDPOINT,
+        username: str | None = None,
+        password: str | None = None,
+        base_path: str | None = None,
 ) -> None:
     waited = 0
     is_ready = check_sonar_status(username, password, base_path)
@@ -48,12 +48,14 @@ def start_sonarqube() -> str:
     if start_result.returncode == 0:
         container_id = start_result.stdout.strip()
         try:
-            os.environ['SONAR_ENDPOINT'] = 'http://localhost:9999/api'
+            sonar_endpoint = 'http://localhost:9999/api'
+            os.environ['SONAR_ENDPOINT'] = sonar_endpoint
 
-            wait_for_sonar()
+            wait_for_sonar(base_path=sonar_endpoint)
+            time.sleep(2)
 
             sonar_test_password = 'password123'
-            update_password(DEFAULT_PASSWORD, sonar_test_password)
+            update_password(DEFAULT_PASSWORD, sonar_test_password, DEFAULT_USERNAME, base_path=sonar_endpoint)
 
             os.environ['SONAR_PASSWORD'] = sonar_test_password
             yield sonar_test_password
