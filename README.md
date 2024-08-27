@@ -94,9 +94,3 @@ tox
 ```
 
 Note: this command requires in the local machine python versions: `3.8`, `3.9`, `3.10`, `3.11`, and `3.12`
-
-Alternatively, it can be executed using the tox docker image:
-
-```console
-docker run -v `pwd`:/tests -it --rm 31z4/tox
-```
