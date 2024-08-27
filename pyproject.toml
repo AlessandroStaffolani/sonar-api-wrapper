@@ -8,7 +8,7 @@ authors = [
 ]
 keywords = ["sonar", "sonarqube"]
 dynamic = ["version"]
-requires-python = ">=3.9"
+requires-python = ">=3.8"
 dependencies = [
     "requests",
 ]
@@ -42,12 +42,45 @@ build-backend = "hatchling.build"
 path = "sonar_api_wrapper/__version__.py"
 
 [tool.pytest.ini_options]
-addopts = "--cov --cov-report xml --cov-report term"
+addopts = "--cov --cov-report xml:coverage.xml --cov-report term --junit-xml=coverage-report.xml --cov-report html:coverage.html -v -r A"
+log_level = "DEBUG"
 testpaths = [
-    "tests",
+    "./tests",
 ]
 
 [tool.coverage.report]
+exclude_lines = [
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
 omit = [
     "tests/*",
 ]
+
+[tool.coverage.run]
+source_pkgs = [
+    "sonar_api_wrapper",
+]
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+envlist = py38, py39, py310, py311, py312
+skip_missing_interpreters = true
+minversion = 4.15.0
+
+[testenv]
+description = run the tests with pytest under {envname}
+package = wheel
+extras =
+    dev
+deps =
+    pytest
+    coverage[toml]
+    pytest-cov
+commands =
+    pytest {posargs: --junit-xml={toxworkdir}{/}junit.{envname}.xml --cov-report html:{envtmpdir}{/}htmlcov --cov-report xml:{toxworkdir}{/}coverage.{envname}.xml}
+
+[coverage:run]
+relative_files = True
+"""

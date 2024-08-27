@@ -2,6 +2,7 @@ import os
 import subprocess
 import sys
 import time
+from typing import Optional
 
 import pytest
 
@@ -12,9 +13,9 @@ from sonar_api_wrapper.client import check_sonar_status, update_password
 def wait_for_sonar(
         max_wait: int = 60,
         sleep: int = 1,
-        username: str | None = None,
-        password: str | None = None,
-        base_path: str | None = None,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        base_path: Optional[str] = None,
 ) -> None:
     waited = 0
     is_ready = check_sonar_status(username, password, base_path)
@@ -49,7 +50,7 @@ def start_sonarqube() -> str:
         container_id = start_result.stdout.strip()
         try:
             sonar_endpoint = 'http://localhost:9999/api'
-            os.environ['SONAR_ENDPOINT'] = sonar_endpoint
+            os.environ['SONAR_HOST_URL'] = sonar_endpoint
 
             wait_for_sonar(base_path=sonar_endpoint)
             time.sleep(2)

@@ -25,8 +25,8 @@ Executes an API call to SonarQube. This method wraps the `requests.request` meth
 - `is_json` (`bool`): If set to `True`, the response will be parsed as JSON. Otherwise, it returns the decoded content. Default is `True`.
 - `username` (`str` | `None`): Username used for authentication. Default is set via the environment variable `SONAR_USERNAME` or "admin". Argument value has precedence, followed by environment variable value and lastly default value is used.
 - `password` (`str` | `None`): Password used for authentication. Default is set via the environment variable `SONAR_PASSWORD` or "admin". Argument value has precedence, followed by environment variable value and lastly default value is used.
-- `token` (`str` | `None`): Token used for authentication. It overrides username and password if present. Default value is set via the environment variable `SONAR_TOKEN` or None. Argument value has precedence, followed by environment variable value and lastly default value is used.
-- `base_path` (`str` | `None`): The base endpoint used to build the API call. Default is set via the environment variable `SONAR_ENDPOINT` or "http://localhost:9000/api/". Argument value has precedence, followed by environment variable value and lastly default value is used.
+- `token` (`str` | `None`): Token used for authentication. It overrides username and password if present. Default value is set via the environment variable `SONAR_AUTH_TOKEN` or None. Argument value has precedence, followed by environment variable value and lastly default value is used.
+- `base_path` (`str` | `None`): The base endpoint used to build the API call. Default is set via the environment variable `SONAR_HOST_URL` or "http://localhost:9000/api/". Argument value has precedence, followed by environment variable value and lastly default value is used.
 
 ### Returns
 
@@ -42,7 +42,7 @@ from sonar_api_wrapper import api_call
 # override default access config
 os.environ['SONAR_PASSWORD'] = 'Username'
 os.environ['SONAR_PASSWORD'] = 'YourPassword'
-os.environ['SONAR_ENDPOINT'] = 'https://yours.sonarqube/api/'
+os.environ['SONAR_HOST_URL'] = 'https://yours.sonarqube/api/'
 
 response = api_call('GET', 'qualityprofiles/search', parameters={
     'defaults': 'true'
@@ -85,4 +85,18 @@ Run the test with command:
 
 ```bash
 pytest
+```
+
+### Multiple python environments:
+
+```console
+tox
+```
+
+Note: this command requires in the local machine python versions: `3.8`, `3.9`, `3.10`, `3.11`, and `3.12`
+
+Alternatively, it can be executed using the tox docker image:
+
+```console
+docker run -v `pwd`:/tests -it --rm 31z4/tox
 ```
